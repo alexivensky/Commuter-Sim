@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33723.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commuter Sim", "Commuter Sim.csproj", "{05CA0870-4906-4FE0-91F2-BD26F3FDC0CB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{05CA0870-4906-4FE0-91F2-BD26F3FDC0CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05CA0870-4906-4FE0-91F2-BD26F3FDC0CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05CA0870-4906-4FE0-91F2-BD26F3FDC0CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05CA0870-4906-4FE0-91F2-BD26F3FDC0CB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {58F7D662-03E4-4A06-B8EB-EC8FB6BEECB2}
+	EndGlobalSection
+EndGlobal
