@@ -28,6 +28,4 @@ app.MapGraphQL();
 
 app.Run();
 
-//GQLTimer g = new GQLTimer(1000);
-//g.SetTimer();
 
