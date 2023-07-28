@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Commuter_Sim
 {
-    public class Query
+    public class Query //hello world
     {
         public Task<List<Train>> GetTrains([Service] Repository repository) =>
             repository.GetTrainsAsync();
