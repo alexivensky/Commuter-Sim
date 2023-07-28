@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,30 @@ namespace Commuter_Sim
         {
             trains.Add(train);
             return Task.CompletedTask;
+        }
+
+        public void TrainPropertyChange(Train train)
+        {
+            train.PropertyChanged += TrainPropertyChanged;
+        }
+
+        private void TrainPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (sender is Train train)
+            {
+                switch (e.PropertyName)
+                {
+                    case "Position":
+                        AddTrain(new Train(0, 0, 0));
+                        break;
+                    case "velocity":
+                        break;
+                    case "Acceleration":
+                        break;
+                }
+                    
+            }
+            
         }
     }
 }
