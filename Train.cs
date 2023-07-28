@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,14 +8,12 @@ using System.Threading.Tasks;
 namespace Commuter_Sim
 {
     [GraphQLDescription("A simple train.")]
-    public class Train
+    public class Train : INotifyPropertyChanged
     {
-        public Train()
-        {
-            Position = 0;
-            Velocity = 0;
-            Acceleration = 0;
-        }
+        private static System.Timers.Timer? timer;
+        private const double INTERVAL = 1000;
+        private const double TIME_DELTA = 1 / INTERVAL;
+        public Train() => new Train(0, 0, 0);
 
         public Train(double pos, double vel, double acc)
         {
@@ -23,7 +22,10 @@ namespace Commuter_Sim
             Acceleration = acc;
         }
 
+        private void UpdatePosition(object? sender, PropertyChangedEventArgs e)
+        {
 
+        }
 
         //more thought should be put into these
         //especially their access modifiers
@@ -45,5 +47,6 @@ namespace Commuter_Sim
         public double DistanceTraveled { get; }
         public double DistanceToBrake { get; }
 
+        public event PropertyChangedEventHandler? PropertyChanged;
     }
 }
