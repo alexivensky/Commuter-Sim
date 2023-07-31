@@ -11,8 +11,8 @@ namespace Commuter_Sim
     {
         public async Task<TrainPayload> AddTrain(TrainInput input, [Service] Repository repository, [Service] ITopicEventSender sender)
         {
-            await sender.SendAsync(nameof(Subscription.TrainAdded), new Train(input.pos, input.vel, input.acc));
-            var train = new Train(input.pos, input.vel, input.acc);
+            await sender.SendAsync(nameof(Subscription.TrainAdded), new Train(input.pos, input.vel, input.acc, sender));
+            var train = new Train(input.pos, input.vel, input.acc, sender);
             await repository.AddTrain(train);
             return new TrainPayload(train);
         }
