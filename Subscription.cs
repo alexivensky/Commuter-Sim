@@ -13,10 +13,20 @@ namespace Commuter_Sim
         public Train TrainAdded([EventMessage] Train train) =>
             train;
 
-        [Subscribe]
-        public List<Train> GetTrains([EventMessage] Repository repository) =>
-            repository.GetTrains();
 
-        
+        [Subscribe]
+        public List<Train> GetTrains([EventMessage] Repository r)
+        {
+            return r.GetTrains();
+        }
+
+        [Subscribe]
+        [Topic]
+        public Train OnTrainPositionUpdated([EventMessage] Train train)
+        {
+            return train;
+        }
+
+
     }
 }

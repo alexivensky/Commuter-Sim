@@ -10,12 +10,19 @@ namespace Commuter_Sim
 {
     public class Repository
     {
+        private readonly ITopicEventSender _sender;
+
+        public Repository(ITopicEventSender sender)
+        {
+            _sender = sender;
+        }
+
         List<Train> trains = new List<Train>();
         public Task<List<Train>> GetTrainsAsync()
         {
             return Task.FromResult(trains);
         }
-        public List<Train> GetTrains() {  return trains; }
+        public List<Train> GetTrains() => trains;
         public Task AddTrain(Train train)
         {
             trains.Add(train);
@@ -34,7 +41,8 @@ namespace Commuter_Sim
                 switch (e.PropertyName)
                 {
                     case "Position":
-                        AddTrain(new Train(0, 0, 0));
+                        //send event to HotChocolate subscription
+                        _sender.SendAsync(nameof(Subscription.TrainAdded), train);
                         break;
                     case "velocity":
                         break;

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
+using HotChocolate.Subscriptions;
 
 namespace Commuter_Sim
 {
@@ -12,6 +13,7 @@ namespace Commuter_Sim
     public class Train : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
+        public ITopicEventSender _sender;
         System.Timers.Timer? _timer;
         private const double INTERVAL = 1000;
         private const double TIME_DELTA = INTERVAL / 1000;
@@ -19,13 +21,15 @@ namespace Commuter_Sim
         private int _id;
         public bool IdSet;
 
-        public Train() => new Train(0, 0, 0);
+        
 
-        public Train(double pos, double vel, double acc)
+        public Train(double pos, double vel, double acc, ITopicEventSender sender)
         {
             _position = pos;
             _velocity = vel;
             _acceleration = acc;
+
+            _sender = sender;
 
             _timer = new System.Timers.Timer(INTERVAL);
             _timer.Elapsed += UpdatePosition;
@@ -47,9 +51,18 @@ namespace Commuter_Sim
 
         private void UpdatePosition(object? sender, ElapsedEventArgs e)
         {
-            _velocity += _acceleration * TIME_DELTA;
-            _position += _velocity * TIME_DELTA;
+            if (this is not null)
+            {
+                Velocity += Acceleration * TIME_DELTA;
+                Position += Velocity * TIME_DELTA;
+                _sender.SendAsync(nameof(Subscription.OnTrainPositionUpdated), this);
+            }
           
+        }
+
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         //more thought should be put into these
@@ -71,10 +84,9 @@ namespace Commuter_Sim
                     return;
                 } 
                 _position = value;
-                if (this is not null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs(nameof(Position)));
-                }
+                
+                NotifyPropertyChanged(nameof(Position));
+                
             }
         }
         [GraphQLDescription("Train's velocity.")]
@@ -88,11 +100,7 @@ namespace Commuter_Sim
                     return;
                 }
                 _velocity = value;
-                if (this is not null)
-                {
-
-                    PropertyChanged(this, new PropertyChangedEventArgs(nameof(Velocity)));
-                }
+                NotifyPropertyChanged(nameof(Velocity));
             }
         }
         [GraphQLDescription("Train's acceleration.")]
@@ -106,10 +114,7 @@ namespace Commuter_Sim
                     return;
                 }
                 _acceleration = value;
-                if (this is not null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs(nameof(Acceleration)));
-                }
+                NotifyPropertyChanged(nameof(Acceleration));
             }
         }
 
