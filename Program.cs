@@ -17,6 +17,7 @@ builder.Services
     .AddSingleton<Repository>()
     .AddGraphQLServer()
     .AddInMemorySubscriptions()
+    .AddType<Train>()
     .AddQueryType<Query>()
     .AddMutationType<Mutation>()
     .AddSubscriptionType<Subscription>();
