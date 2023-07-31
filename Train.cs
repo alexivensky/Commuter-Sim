@@ -10,12 +10,11 @@ using HotChocolate.Subscriptions;
 namespace Commuter_Sim
 {
     [GraphQLDescription("A simple train.")]
-    public class Train : INotifyPropertyChanged
+    public class Train
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
         public ITopicEventSender _sender;
         System.Timers.Timer? _timer;
-        private const double INTERVAL = 1000;
+        private const double INTERVAL = 10;
         private const double TIME_DELTA = INTERVAL / 1000;
 
         private int _id;
@@ -51,18 +50,13 @@ namespace Commuter_Sim
 
         private void UpdatePosition(object? sender, ElapsedEventArgs e)
         {
-            if (this is not null)
+            if (this is null)
             {
-                Velocity += Acceleration * TIME_DELTA;
-                Position += Velocity * TIME_DELTA;
-                _sender.SendAsync(nameof(Subscription.OnTrainPositionUpdated), this);
+                return;
             }
-          
-        }
-
-        private void NotifyPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            Velocity += Acceleration * TIME_DELTA;
+            Position += Velocity * TIME_DELTA;
+            _sender.SendAsync(nameof(Subscription.OnTrainPositionUpdated), this);
         }
 
         //more thought should be put into these
@@ -85,8 +79,6 @@ namespace Commuter_Sim
                 } 
                 _position = value;
                 
-                NotifyPropertyChanged(nameof(Position));
-                
             }
         }
         [GraphQLDescription("Train's velocity.")]
@@ -100,7 +92,6 @@ namespace Commuter_Sim
                     return;
                 }
                 _velocity = value;
-                NotifyPropertyChanged(nameof(Velocity));
             }
         }
         [GraphQLDescription("Train's acceleration.")]
@@ -114,7 +105,6 @@ namespace Commuter_Sim
                     return;
                 }
                 _acceleration = value;
-                NotifyPropertyChanged(nameof(Acceleration));
             }
         }
 
