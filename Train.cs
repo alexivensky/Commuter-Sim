@@ -50,14 +50,13 @@ namespace Commuter_Sim
 
         private void UpdatePosition(object? sender, ElapsedEventArgs e)
         {
-            if (this is null)
-            {
-                return;
-            }
+            if (this is null) return;
             Velocity += Acceleration * TIME_DELTA;
             Position += Velocity * TIME_DELTA;
             _sender.SendAsync(nameof(Subscription.OnTrainPositionUpdated), this);
         }
+
+
 
         //more thought should be put into these
         //especially their access modifiers
@@ -73,7 +72,7 @@ namespace Commuter_Sim
             get => _position;
             set
             {
-                if (Math.Abs(value - _position) < 0.00001)
+                if (Math.Abs(value - _position) < 0.001)
                 {
                     return;
                 } 
@@ -87,7 +86,7 @@ namespace Commuter_Sim
             get => _velocity;
             set
             {
-                if (Math.Abs(value - _velocity) < 0.00001)
+                if (Math.Abs(value - _velocity) < 0.001)
                 {
                     return;
                 }
@@ -100,7 +99,7 @@ namespace Commuter_Sim
             get => _acceleration;
             set
             {
-                if (Math.Abs(value - _acceleration) < 0.00001)
+                if (Math.Abs(value - _acceleration) < 0.001)
                 {
                     return;
                 }

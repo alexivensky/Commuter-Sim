@@ -8,27 +8,27 @@ using HotChocolate.Subscriptions;
 
 namespace Commuter_Sim
 {
+    /**
+     * Simple container class for server objects.
+     */
     public class Repository
     {
         private readonly ITopicEventSender _sender;
 
-        public Repository(ITopicEventSender sender)
-        {
+        public Repository(ITopicEventSender sender) => 
             _sender = sender;
-        }
 
         List<Train> trains = new List<Train>();
-        public Task<List<Train>> GetTrainsAsync()
-        {
-            return Task.FromResult(trains);
-        }
-        public List<Train> GetTrains() => trains;
+        public Task<List<Train>> GetTrainsAsync() => 
+            Task.FromResult(trains);
+
+        public List<Train> GetTrains() => 
+            trains;
+
         public Task AddTrain(Train train)
         {
             trains.Add(train);
             return Task.CompletedTask;
         }
-
-        
     }
 }

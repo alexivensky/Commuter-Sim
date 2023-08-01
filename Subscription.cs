@@ -22,10 +22,8 @@ namespace Commuter_Sim
 
         [Subscribe]
         [Topic]
-        public Train OnTrainPositionUpdated([EventMessage] Train train)
-        {
-            return train;
-        }
+        public Train OnTrainPositionUpdated([EventMessage] Train train) => 
+            train;
 
 
     }
