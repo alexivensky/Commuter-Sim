@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using HotChocolate.Subscriptions;
 
 namespace Commuter_Sim
@@ -14,11 +15,30 @@ namespace Commuter_Sim
     public class Repository
     {
         private readonly ITopicEventSender _sender;
+        private System.Timers.Timer _timer;
+        private const double INTERVAL = 10;
+        private const double TIME_DELTA = INTERVAL / 1000;
 
-        public Repository(ITopicEventSender sender) => 
+        public Repository(ITopicEventSender sender)
+        {
             _sender = sender;
 
-        List<Train> trains = new List<Train>();
+            _timer = new System.Timers.Timer(INTERVAL);
+            _timer.Elapsed += RepositoryTimerHandler;
+            _timer.Start();
+        }
+
+        private void RepositoryTimerHandler(object? sender, ElapsedEventArgs e)
+        {
+            foreach (Train train in trains)
+            {
+                train.UpdatePosition();
+            }
+            _sender.SendAsync(nameof(Subscription.OnRepositoryUpdated), trains);
+        }
+
+        private List<Train> trains = new List<Train>();
+
         public Task<List<Train>> GetTrainsAsync() => 
             Task.FromResult(trains);
 
