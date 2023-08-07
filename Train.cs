@@ -12,51 +12,28 @@ namespace Commuter_Sim
     [GraphQLDescription("A simple train.")]
     public class Train
     {
-        public ITopicEventSender _sender;
-        System.Timers.Timer? _timer;
         private const double INTERVAL = 10;
         private const double TIME_DELTA = INTERVAL / 1000;
-
+        private const double DWELL_TIME = 5000;
         private int _id;
-        public bool IdSet;
 
-        
-
-        public Train(double pos, double vel, double acc, ITopicEventSender sender)
+        public Train(double pos, double vel, double acc, int id)
         {
             _position = pos;
             _velocity = vel;
             _acceleration = acc;
 
-            _sender = sender;
-
-            _timer = new System.Timers.Timer(INTERVAL);
-            _timer.Elapsed += UpdatePosition;
-            _timer.Start();
+            _id = id;
         }
 
-        public int ID
-        {
-            get => _id;
-            set
-            {
-                if (!IdSet)
-                {
-                    _id = value;
-                    IdSet = true;
-                }
-            }
-        }
+        public int ID => _id;
 
-        private void UpdatePosition(object? sender, ElapsedEventArgs e)
+        public void UpdatePosition()
         {
             if (this is null) return;
             Velocity += Acceleration * TIME_DELTA;
             Position += Velocity * TIME_DELTA;
-            _sender.SendAsync(nameof(Subscription.OnTrainPositionUpdated), this);
         }
-
-
 
         //more thought should be put into these
         //especially their access modifiers
@@ -64,6 +41,8 @@ namespace Commuter_Sim
         private double _position;
         private double _velocity;
         private double _acceleration;
+
+        private double _distanceToTravel;
 
         // instantaneous properties
         [GraphQLDescription("Train's position.")]
@@ -105,6 +84,12 @@ namespace Commuter_Sim
                 }
                 _acceleration = value;
             }
+        }
+
+        public double DistanceToTravel
+        {
+            get => _distanceToTravel;
+            set => _distanceToTravel = value;
         }
 
         //intrinsic properties
