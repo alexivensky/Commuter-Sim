@@ -17,14 +17,15 @@ namespace Commuter_Sim
     {
         public async Task<TrainPayload> AddTrain(TrainInput input, [Service] Repository repository, [Service] ITopicEventSender sender)
         {
-            await sender.SendAsync(nameof(Subscription.TrainAdded), new Train(input.pos, input.vel, input.acc, sender));
-            var train = new Train(input.pos, input.vel, input.acc, sender);
+            var train = new Train(input.pos, input.vel, input.acc, input.id);
             await repository.AddTrain(train);
+            await sender.SendAsync(nameof(Subscription.TrainAdded), train);
+            await sender.SendAsync(nameof(Subscription.GetTrains), repository);
             return new TrainPayload(train);
         }
 
 
         public record TrainPayload(Train train);
-        public record TrainInput(double pos, double vel, double acc);
+        public record TrainInput(double pos, double vel, double acc, int id);
     }
 }
