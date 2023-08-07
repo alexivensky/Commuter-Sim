@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,9 +16,9 @@ namespace Commuter_Sim
 
 
         [Subscribe]
-        public List<Train> GetTrains([EventMessage] Repository r)
+        public List<Train> GetTrains([EventMessage] Repository repository)
         {
-            return r.GetTrains();
+            return repository.GetTrains();
         }
 
         [Subscribe]
@@ -25,6 +26,8 @@ namespace Commuter_Sim
         public Train OnTrainPositionUpdated([EventMessage] Train train) => 
             train;
 
-
+        [Subscribe]
+        public List<Train> OnRepositoryUpdated([EventMessage] List<Train> trains) =>
+            trains;
     }
 }
