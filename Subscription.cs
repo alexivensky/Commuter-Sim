@@ -27,7 +27,7 @@ namespace Commuter_Sim
             train;
 
         [Subscribe]
-        public List<Train> OnTrainsUpdated([EventMessage] List<Train> trains) =>
+        public List<Train> OnRepositoryUpdated([EventMessage] List<Train> trains) =>
             trains;
     }
 }
