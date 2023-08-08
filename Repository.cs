@@ -32,12 +32,17 @@ namespace Commuter_Sim
         {
             foreach (Train train in trains)
             {
-                train.UpdatePosition();
+                train.UpdatePosition(TIME_DELTA);
             }
-            _sender.SendAsync(nameof(Subscription.OnRepositoryUpdated), trains);
+            _sender.SendAsync(nameof(Subscription.OnTrainsUpdated), trains);
         }
 
         private List<Train> trains = new List<Train>();
+
+        public bool IDExists(int check)
+        {
+            return trains.Exists(train => train.ID == check);
+        }
 
         public Task<List<Train>> GetTrainsAsync() => 
             Task.FromResult(trains);
