@@ -20,7 +20,8 @@ builder.Services
     .AddType<Train>()
     .AddQueryType<Query>()
     .AddMutationType<Mutation>()
-    .AddSubscriptionType<Subscription>();
+    .AddSubscriptionType<Subscription>()
+    .AddErrorFilter<GQLErrorFilter>();
 
 var app = builder.Build();
 app.UseRouting();
