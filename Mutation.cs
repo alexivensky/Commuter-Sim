@@ -15,9 +15,38 @@ namespace Commuter_Sim
 
     public class Mutation
     {
+        private String? _errorMessage;
+        private int _errorFlag;
         public async Task<TrainPayload> AddTrain(TrainInput input, [Service] Repository repository, [Service] ITopicEventSender sender)
         {
-            var train = new Train(input.pos, input.vel, input.acc, input.id);
+            _errorFlag = 0;
+            if (input.pos < 0)
+            {
+                _errorMessage += "Position cannot be negative. ";
+                _errorFlag++;
+            }
+            if (repository.IDExists(input.id))
+            {
+                _errorMessage += $"A train with ID: {input.id} already exists. Each train must have a unique ID. ";
+                _errorFlag++;
+            }
+            if (input.deceleration > 0)
+            {
+                _errorMessage += $"Deceleration must be a negative number. ";
+                _errorFlag++;
+            }
+            if (input.maxSpeed <= 0)
+            {
+                _errorMessage += $"Maximum speed must be a positive, non-zero number. ";
+                _errorFlag++;
+            }
+
+            if (_errorFlag > 0)
+            {
+                throw new ApplicationException($"{_errorFlag} Errors: " + _errorMessage);
+            }
+
+            var train = new Train(input.pos, input.vel, input.acc, input.maxSpeed, input.totalDistance, input.deceleration, input.id);
             await repository.AddTrain(train);
             await sender.SendAsync(nameof(Subscription.TrainAdded), train);
             await sender.SendAsync(nameof(Subscription.GetTrains), repository);
@@ -26,6 +55,6 @@ namespace Commuter_Sim
 
 
         public record TrainPayload(Train train);
-        public record TrainInput(double pos, double vel, double acc, int id);
+        public record TrainInput(double pos, double vel, double acc, double maxSpeed, double totalDistance, double deceleration, int id);
     }
 }
