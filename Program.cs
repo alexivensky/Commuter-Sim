@@ -10,7 +10,10 @@ using System.Runtime.CompilerServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+/**
+ * Commuter Simulator
+ * by Alex Ivensky
+ */
 
 
 builder.Services
@@ -23,7 +26,7 @@ builder.Services
     .AddSubscriptionType<Subscription>()
     .AddErrorFilter<GQLErrorFilter>();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 app.UseRouting();
 app.UseWebSockets();
 app.MapGraphQL();
