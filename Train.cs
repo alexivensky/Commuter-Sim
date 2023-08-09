@@ -15,16 +15,22 @@ namespace Commuter_Sim
         private const double DWELL_TIME = 5000;
         private int _id;
 
-        public Train(double pos, double vel, double acc, double maxSpeed, double totalDistance, double deceleration, int id)
+        public Train(double position,
+                     double velocity,
+                     double acceleration,
+                     double maxSpeed,
+                     double totalDistance,
+                     double deceleration,
+                     int id)
         {
-            _position = pos;
-            _velocity = vel;
-            _acceleration = acc;
+            _position = position;
+            _velocity = velocity;
+            _acceleration = acceleration;
             _maxSpeed = maxSpeed;
             _totalDistance = totalDistance;
             _deceleration = deceleration;
             _id = id;
-
+            _status = "";
             _brakingFlag = false;
             _stoppedFlag = false;
         }
@@ -64,6 +70,7 @@ namespace Commuter_Sim
             if (Velocity >= MaxSpeed && !_brakingFlag && !_stoppedFlag)
             {
                 Acceleration = 0;
+                Velocity = MaxSpeed;
                 _status = "MAX SPEED REACHED";
             }
         }
