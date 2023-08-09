@@ -29,5 +29,9 @@ namespace Commuter_Sim
         [Subscribe]
         public List<Train> OnTrainsUpdated([EventMessage] List<Train> trains) =>
             trains;
+
+        [Subscribe]
+        public Train RemovedTrain([EventMessage] Train train) =>
+            train;
     }
 }
