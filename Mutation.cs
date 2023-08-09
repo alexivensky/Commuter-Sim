@@ -20,6 +20,7 @@ namespace Commuter_Sim
         public async Task<TrainPayload> AddTrain(TrainInput input, [Service] Repository repository, [Service] ITopicEventSender sender)
         {
             _errorFlag = 0;
+            _errorMessage = "";
             if (input.pos < 0)
             {
                 _errorMessage += "Position cannot be negative. ";
@@ -46,11 +47,24 @@ namespace Commuter_Sim
                 throw new ApplicationException($"{_errorFlag} Errors: " + _errorMessage);
             }
 
-            var train = new Train(input.pos, input.vel, input.acc, input.maxSpeed, input.totalDistance, input.deceleration, input.id);
+            Train train = new Train(input.pos, input.vel, input.acc, input.maxSpeed, input.totalDistance, input.deceleration, input.id);
             await repository.AddTrain(train);
             await sender.SendAsync(nameof(Subscription.TrainAdded), train);
             await sender.SendAsync(nameof(Subscription.GetTrains), repository);
             return new TrainPayload(train);
+        }
+
+        public async Task<TrainPayload> RemoveTrain(int id, [Service] Repository repository, [Service] ITopicEventSender sender)
+        {
+            Train? temp = repository.GetTrain(id);
+            if (!repository.IDExists(id) || temp is null)
+            {
+                throw new ApplicationException($"Train with ID: {id} does not exist.");
+            }
+            await repository.RemoveTrain(id);
+            await sender.SendAsync(nameof(Subscription.GetTrains), repository);
+            await sender.SendAsync(nameof(Subscription.RemovedTrain), temp);
+            return new TrainPayload(temp);
         }
 
 
