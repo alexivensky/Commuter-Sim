@@ -39,10 +39,8 @@ namespace Commuter_Sim
 
         private List<Train> trains = new List<Train>();
 
-        public bool IDExists(int check)
-        {
-            return trains.Exists(train => train.ID == check);
-        }
+        public bool IDExists(int check) => 
+            trains.Exists(train => train.ID == check);
 
         public Task<List<Train>> GetTrainsAsync() => 
             Task.FromResult(trains);
@@ -54,6 +52,17 @@ namespace Commuter_Sim
         {
             trains.Add(train);
             return Task.CompletedTask;
+        }
+
+        public Task RemoveTrain(int id)
+        {
+            trains.RemoveAll(x => x.ID == id);
+            return Task.CompletedTask;
+        }
+
+        public Train? GetTrain(int id)
+        {
+            return trains.Find(x => x.ID == id);
         }
     }
 }
