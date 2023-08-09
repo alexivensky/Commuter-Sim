@@ -14,7 +14,7 @@ namespace Commuter_Sim
      */
     public class Repository
     {
-        private readonly ITopicEventSender _sender;
+        private ITopicEventSender _sender;
         private System.Timers.Timer _timer;
         private const double INTERVAL = 10;
         private const double TIME_DELTA = INTERVAL / 1000;
@@ -35,6 +35,16 @@ namespace Commuter_Sim
                 train.UpdatePosition(TIME_DELTA);
             }
             _sender.SendAsync(nameof(Subscription.OnTrainsUpdated), trains);
+        }
+
+        public void PauseTimer()
+        {
+            _timer.Stop();
+        }
+
+        public void StartTimer()
+        {
+            _timer.Start();
         }
 
         private List<Train> trains = new List<Train>();
