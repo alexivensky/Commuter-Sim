@@ -33,6 +33,7 @@ namespace Commuter_Sim
             _status = "";
             _brakingFlag = false;
             _stoppedFlag = false;
+            _creepingFlag = false;
         }
 
         public int ID => _id;
@@ -52,19 +53,30 @@ namespace Commuter_Sim
 
             _distanceToBrake = -(Math.Pow(Velocity, 2)) / (2 * Deceleration);
 
-            if (Math.Abs(_distanceToBrake - _distanceToTravel) < 0.1 && !_stoppedFlag)
+            if (Math.Abs(_distanceToBrake - _distanceToTravel) <= 1 && !_stoppedFlag && !_creepingFlag)
             {
                 _acceleration = Deceleration;
                 _brakingFlag = true;
                 _status = "BRAKING";
             }
 
-            if (Math.Abs(_velocity) < 0.1 && _brakingFlag)
+            if (Math.Abs(_velocity) <= 0.1 && _brakingFlag || _creepingFlag)
             {
-                Velocity = 0;
                 Acceleration = 0;
-                _stoppedFlag = true;
-                _status = "STOPPED";
+                if (_distanceToTravel > 0)
+                {
+                    Velocity = 0.1;
+                    _status = "CREEPING";
+                    _creepingFlag = true;
+                    _brakingFlag = false;
+                }
+                else
+                {
+                    Velocity = 0;
+                    _stoppedFlag = true;
+                    _creepingFlag = false;
+                    _status = "STOPPED";
+                }
             }
 
             if (Velocity >= MaxSpeed && !_brakingFlag && !_stoppedFlag)
@@ -74,9 +86,6 @@ namespace Commuter_Sim
                 _status = "MAX SPEED REACHED";
             }
         }
-
-        //more thought should be put into these
-        //especially their access modifiers
 
         private double _position;
         private double _velocity;
@@ -90,6 +99,7 @@ namespace Commuter_Sim
         private bool _brakingFlag;
         private bool _stoppedFlag;
         private string _status;
+        private bool _creepingFlag;
 
         // instantaneous properties
         [GraphQLDescription("Train's position.")]
@@ -137,14 +147,10 @@ namespace Commuter_Sim
         //things to calculate with each time step
         //note: these do not have set functions because that wouldn't make any sense
         public double DistanceTraveled { get; }
-        public double DistanceToBrake { get => _distanceToBrake; }
+        public double DistanceToBrake => _distanceToBrake;
 
-        public String Status
-        {
-            get => _status;
-            set => _status = value;
-        }
+        public String Status => _status;
 
-        
+
     }
 }
