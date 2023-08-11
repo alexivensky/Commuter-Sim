@@ -17,7 +17,7 @@ namespace Commuter_Sim
     {
         private String? _errorMessage;
         private int _errorFlag;
-        public async Task<Train> AddTrain(TrainInput input, [Service] Repository repository, [Service] ITopicEventSender sender)
+        public async Task<TrainPayload> AddTrain(TrainInput input, [Service] Repository repository, [Service] ITopicEventSender sender)
         {
             _errorFlag = 0;
             _errorMessage = "";
@@ -51,10 +51,10 @@ namespace Commuter_Sim
             await repository.AddTrain(train);
             await sender.SendAsync(nameof(Subscription.TrainAdded), train);
             await sender.SendAsync(nameof(Subscription.GetTrains), repository);
-            return train;
+            return new TrainPayload(train);
         }
 
-        public async Task<Train> RemoveTrain(int id, [Service] Repository repository, [Service] ITopicEventSender sender)
+        public async Task<TrainPayload> RemoveTrain(int id, [Service] Repository repository, [Service] ITopicEventSender sender)
         {
             Train? temp = repository.GetTrain(id);
             if (!repository.IDExists(id) || temp is null)
@@ -64,8 +64,16 @@ namespace Commuter_Sim
             await repository.RemoveTrain(id);
             await sender.SendAsync(nameof(Subscription.GetTrains), repository);
             await sender.SendAsync(nameof(Subscription.RemovedTrain), temp);
-            return temp;
+            return new TrainPayload(temp);
         }
+
+        public async Task<TrackPayload> AddTrack(int id, int length, [Service] Repository repository)
+        {
+            Track track = new Track(length);
+            return new TrackPayload(track);
+
+        }
+
 
         public async Task<String> PauseTimer([Service] Repository repository)
         {
@@ -79,5 +87,8 @@ namespace Commuter_Sim
             return "Timer resumed.";
         }
         public record TrainInput(double pos, double vel, double acc, double maxSpeed, double totalDistance, double deceleration, int id);
+        public record TrainPayload(Train train);
+        public record TrackInput(double trackLength);
+        public record TrackPayload(Track track);
     }
 }
