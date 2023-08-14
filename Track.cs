@@ -11,13 +11,12 @@ namespace Commuter_Sim
         private List<Train> _trainsOnTrack = new List<Train>();
         private int _trackLength;
 
-        private Station _stationA, _stationB;
-
-        public Track(int trackLength, Station stationA, Station stationB)
+        public Track(int trackLength)
         {
             _trackLength = trackLength;
-            _stationA = stationA;
-            _stationB = stationB;
         }
+
+        public List<Train> TrainsOnTrack => _trainsOnTrack;
+        public int TrackLength => _trackLength;
     }
 }
