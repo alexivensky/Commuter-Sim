@@ -47,7 +47,7 @@ namespace Commuter_Sim
                 throw new ApplicationException($"{_errorFlag} Errors: " + _errorMessage);
             }
 
-            Train train = new Train(input.pos, input.vel, input.acc, input.maxSpeed, input.totalDistance, input.deceleration, input.id);
+            Train train = new Train(input.pos, input.vel, input.acc, input.maxSpeed, input.deceleration, input.id);
             await repository.AddTrain(train);
             await sender.SendAsync(nameof(Subscription.TrainAdded), train);
             await sender.SendAsync(nameof(Subscription.GetTrains), repository);
@@ -86,7 +86,7 @@ namespace Commuter_Sim
             repository.StartTimer();
             return "Timer resumed.";
         }
-        public record TrainInput(double pos, double vel, double acc, double maxSpeed, double totalDistance, double deceleration, int id);
+        public record TrainInput(double pos, double vel, double acc, double maxSpeed, double deceleration, int id);
         public record TrainPayload(Train train);
         public record TrackInput(double trackLength);
         public record TrackPayload(Track track);
