@@ -21,6 +21,8 @@ builder.Services
     .AddGraphQLServer()
     .AddInMemorySubscriptions()
     .AddType<Train>()
+    .AddType<Station>()
+    .AddType<Track>()
     .AddQueryType<Query>()
     .AddMutationType<Mutation>()
     .AddSubscriptionType<Subscription>()
