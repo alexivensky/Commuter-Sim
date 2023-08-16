@@ -12,7 +12,7 @@ namespace Commuter_Sim
     [GraphQLDescription("A simple train.")]
     public class Train
     {
-        private const int DWELL_TIME = 100;
+        private const int DWELL_TIME = 500;  //divide by 100 for seconds
         private const double CREEP_SPEED = 0.2;
         private int _id;
 
@@ -29,13 +29,14 @@ namespace Commuter_Sim
             _brakingFlag = false;
             _stoppedFlag = false;
             _creepingFlag = false;
-            _doneFlag = false;
 
             _currentStation = new Station("A");
             _atStation = true;
             _route.Add(_currentStation);
             _route.Add(new Track(50));
             _route.Add(new Station("B"));
+            _route.Add(new Track(200));
+            _route.Add(new Station("C"));
 
             Track temp = (Track)_route[1];
             _totalDistance = temp.TrackLength;
@@ -43,6 +44,7 @@ namespace Commuter_Sim
             _routeIndex = 0;
 
             _dwellCounter = DWELL_TIME;
+            _timer = 0;
         }
 
         private double _initAcceleration;
@@ -53,11 +55,18 @@ namespace Commuter_Sim
         {
             if (this is null) return;
 
-            
+            _timer += 1;
+
+            if (_routeIndex == _route.Count)
+            {
+                _status = "SIMULATION DONE. A strange game. The only winning move is not to play. How about a nice game of chess?";
+                return;
+            }
 
             if (_atStation) // at station
             {
-                _status = "DWELLING";
+                Station tempS = (Station)_route[_routeIndex];
+                _status = "DWELLING AT STATION: " + tempS.StationName;
                 //set all private members to values of next track
                 _position = 0;
                 if (_dwellCounter > 0 && _atStation)
@@ -67,16 +76,13 @@ namespace Commuter_Sim
                 else
                 {
                     _atStation = false;
+                    _stoppedFlag = false;
                     _routeIndex++;
-                    if (_routeIndex == _route.Count)
+                    
+                    if (_routeIndex < _route.Count && _route[_routeIndex] is Track)
                     {
-                        _status = "SIMULATION DONE. A strange game. The only winning move is not to play. How about a nice game of chess?";
-                        return;
-                    }
-                    else if (_routeIndex < _route.Count && _route[_routeIndex] is Track)
-                    {
-                        Track temp = (Track)_route[_routeIndex];
-                        _totalDistance = temp.TrackLength;
+                        Track tempT = (Track)_route[_routeIndex];
+                        _totalDistance = tempT.TrackLength;
                         _position = 0;
                     }
                     Acceleration = _initAcceleration;
@@ -104,7 +110,7 @@ namespace Commuter_Sim
                         _status = "BRAKING";
                     }
 
-                    if (Math.Abs(_velocity) <= 0.1 && _brakingFlag || _creepingFlag)
+                    if (Math.Abs(_velocity) <= CREEP_SPEED && _brakingFlag || _creepingFlag)
                     {
                         Acceleration = 0;
                         if (_distanceToTravel > 0)
@@ -154,13 +160,13 @@ namespace Commuter_Sim
 
         private bool _brakingFlag;
         private bool _stoppedFlag;
-        private string _status;
         private bool _creepingFlag;
-        private bool _doneFlag;
-
         private bool _atStation;
 
+        private string _status;
+
         private int _dwellCounter;
+        private int _timer;
 
         // instantaneous properties
         [GraphQLDescription("Train's position.")]
@@ -217,9 +223,9 @@ namespace Commuter_Sim
             get => _dwellCounter / 100.0;
         }
 
-        public bool DoneFlag
+        public double Time
         {
-            get => _doneFlag;
+            get => _timer / 100.0;
         }
     }
 }
