@@ -67,13 +67,6 @@ namespace Commuter_Sim
             return new TrainPayload(temp);
         }
 
-        public async Task<TrackPayload> AddTrack(int id, int length, [Service] Repository repository)
-        {
-            Track track = new Track(length);
-            return new TrackPayload(track);
-
-        }
-
 
         public async Task<String> PauseTimer([Service] Repository repository)
         {
